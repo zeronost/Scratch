@@ -3,11 +3,15 @@ package com.andrew.threads;
 public class SortUtilTest {
 	
 	
-	private static int n = 50000;
+	private static int n = 10000;
 	private static int max = 100000;
 	
 	
 	public static void main(String[] args) {
+		testAll();
+	}
+	
+	public static void testAll(){
 		testDirectInsertionSort();
 		testShellSort();
 		testSimpleSelectionSort();
@@ -21,8 +25,9 @@ public class SortUtilTest {
 		testQuikSort1();
 		testQuikSort2(6);
 		testMergeSort();
+		testMergeSortRecursive();
+		testRadixSort();
 	}
-
 	
 	public static void testDirectInsertionSort() {
 		System.out.println("\r\nDirect Insertion Sort-----------------------------------");
@@ -133,11 +138,34 @@ public class SortUtilTest {
 		System.out.println("排序 " + (SortUtil.judgeOrders(a)?"成功":"失败"));
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static void testMergeSort() {
 		System.out.println("\r\nMerge Sort-----------------------------------");
 		Comparable[] a = SortUtil.getRandomInts(n, max);
 		long c = System.currentTimeMillis();
-		a = SortUtil.mergeSort(a);
+		SortUtil.mergeSort(a);
+		System.out.println("耗时 " + (System.currentTimeMillis() - c));
+		System.out.println("排序 " + (SortUtil.judgeOrders(a)?"成功":"失败"));
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static void testMergeSortRecursive() {
+		System.out.println("\r\nMerge Sort Recursive-----------------------------------");
+		Comparable[] a = SortUtil.getRandomInts(n, max);
+		long c = System.currentTimeMillis();
+		SortUtil.mergeSortRecursive(a);
+		System.out.println("耗时 " + (System.currentTimeMillis() - c));
+		System.out.println("排序 " + (SortUtil.judgeOrders(a)?"成功":"失败"));
+	}
+	
+	public static void testRadixSort() {
+		System.out.println("\r\nRadix Sort-----------------------------------");
+		Integer[] a = SortUtil.getRandomInts(n, max);
+		int k = 0;
+		for(int i = 1; max/i > 0; i = i*10)
+			k ++;
+		long c = System.currentTimeMillis();
+		SortUtil.radixSort(a, k, 10);
 		System.out.println("耗时 " + (System.currentTimeMillis() - c));
 		System.out.println("排序 " + (SortUtil.judgeOrders(a)?"成功":"失败"));
 	}
