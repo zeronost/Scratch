@@ -348,33 +348,25 @@ public class SortUtil {
 	}
 	
 	/**
-	 * 归并排序
+	 * 归并排序 迭代实现
 	 * @param a 表
 	 * @return a 有序表
 	 */
-	public static Comparable[] mergeSort(Comparable[] a){
+	public static void mergeSort(Comparable[] a){
 		Comparable[] b = new Comparable[a.length];//临时表,用以存放合并数据
-		Comparable[] tmp;
 		int len = 1;// 初始子表长度 从1开始
 		while(len < a.length){
 			int s = len;//缓存单子表长度,用以计算移动步长
 			len = 2*s;//两张子表长度,用以计算移动步长
 			int i = 0;//左子表起始位置
 			while(i + len <= a.length){//若本轮未合并主表含两个及以上长度为len的子表, 则进行两两合并
-				merge(a, b, i, i + s - 1, i + len -1);//合并子表
+				mergeOptimize(a, b, i, i + s - 1, i + len -1);//合并子表
 				i = i + len;//左子表起始位置变更为下一个未合并子表
 			}
 			if(i + s < a.length){//若本轮未合并主表仅剩下两个不等长子表,将其合并(合并后排序完成. 仅当a.length = 2*k + 1 时有此情况)
-				merge(a, b, i, i + s - 1, a.length - 1);
-				i = a.length;//将位置记录为主表长度,无须拷贝主表剩余未合并子表到临时表
+				mergeOptimize(a, b, i, i + s - 1, a.length - 1);
 			}
-			while(i < a.length)// 若本轮剩下一张子表未做合并, 则将其拷贝到临时表
-				b[i] = a[i++];
-			tmp = a; // 将合并后的表赋值给a,用做下一轮迭代
-			a = b; 
-			b = tmp;
 		}
-		return a;
 	}
 	
 	/**
@@ -382,58 +374,87 @@ public class SortUtil {
 	 * @param a
 	 * @return
 	 */
-	public static Comparable[] mergeSortRecursive(Comparable[] a){
+	public static void mergeSortRecursive(Comparable[] a){
 		Comparable[] b = new Comparable[a.length];
 		recursiveMerge(a, b, 0, a.length - 1);
-		return a;
 	}
 	
+	/**
+	 * 递归合并
+	 * @param a 原表
+	 * @param b 结果表
+	 * @param s 开始位置
+	 * @param t 结束位置
+	 */
 	private static void recursiveMerge(Comparable[] a, Comparable[] b, int s, int t){
-		Comparable[] c = null;
-		if(s==t)
-			a[s] = b[s];
-		else{
+		if(s < t){
 			int m = (s+t)/2;
-			recursiveMerge(a, c, s, m);
-			recursiveMerge(a, c, m+1, t);
-			merge(c, b, s, m+1, t);
+			recursiveMerge(a, b, s, m);
+			recursiveMerge(a, b, m+1, t);
+			mergeOptimize(a, b, s, m, t);
 		}
 	}
 	
 	/**
-	 * 将主表 a 中两子表合并并且赋值给临时表 b
-	 * @param a 主表
-	 * @param b 临时表
-	 * @param l 左子表起始位置
-	 * @param m 左子表结束位置
-	 * @param h 右子表结束位置
+	 * 合并子表优化版
+	 * 优化临时表拷贝到原表, 所有结果存储在原表中
+	 * @param a
+	 * @param tmp
+	 * @param l
+	 * @param m
+	 * @param h
 	 */
-	private static void merge(Comparable[] a, Comparable[] b, int l, int m, int h){
+	private static void mergeOptimize(Comparable[] a, Comparable[] tmp, int l, int m, int h){
 		int i = l;
-		int c = i;
 		int j = m + 1;
+		int c = 0;
 		while(i <= m && j <= h){
 			if(a[i].compareTo(a[j]) <= 0){
-				b[c++] = a[i++];
+				tmp[c++] = a[i++];
 			} else{
-				b[c++] = a[j++];
+				tmp[c++] = a[j++];
 			}
 		}
 		while(i <= m){
-			b[c++] = a[i++];
+			tmp[c++] = a[i++];
 		}
 		while(j <= h){
-			b[c++] = a[j++];
+			tmp[c++] = a[j++];
+		}
+		for(int k = 0; k < c; k ++){
+			 a[l + k] = tmp[k];
 		}
 	}
 	
 	
+	
 	/**
-	 * 桶排序/基数排序
+	 * 基数排序   箱排序优化
 	 * @param a 表
 	 */
-	public static void radixSort(Comparable[] a){
-		
+	public static void radixSort(Integer[] a, int k, int r){
+		int n = a.length;
+		Integer[] tmp = new Integer[n];
+		Integer[] ex = null;
+		int[] cnt = new int[r];
+		for(int i = 0, rtok = 1; i < k; i++, rtok = rtok * r){//循环数据位数,对每个数位进行箱排序
+			for(int j=0; j < r; j++)//将位置索引清空
+				cnt[j] = 0;
+			
+			for(int j = 0; j < n; j++)// 计算当前数位各个数位置索引
+				cnt[(a[j]/rtok)%r]++;
+			
+			for(int j = 1; j < r; j++)// 迭加前面的索引, 计算正确索引位置(存在相等数,因此需要迭加)
+				cnt[j] = cnt[j-1] + cnt[j];
+			
+			for(int j = n - 1; j >= 0; j--){//将序列中各数按照当前数位计算的索引进行放置
+				cnt[(a[j]/rtok)%r]--;//相同索引位置放置时,索引-1
+				tmp[cnt[(a[j]/rtok)%r]] = a[j];//将序列中的数放置到正确索引位置
+			}
+			ex = tmp;
+			tmp = a;
+			a = ex;
+		}
 	}
 	
 	
