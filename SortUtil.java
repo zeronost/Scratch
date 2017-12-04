@@ -6,7 +6,8 @@ import java.util.Random;
 public class SortUtil {
 
 	/**
-	 * 直接插入排序
+	 * 直接插入排序 
+	 * @category In-place Stable O(n^2)
 	 * @param a 表
 	 */
 	public static void insertionSort(Comparable[] a) {
@@ -15,6 +16,7 @@ public class SortUtil {
 	
 	/**
 	 * 希尔排序
+	 * @category In-place Stable O(n^1.5)
 	 * @param a 表
 	 */
 	public static void shellSort(Comparable[] a) {
@@ -50,6 +52,7 @@ public class SortUtil {
 	
 	/**
 	 * 简单选择排序
+	 * @category In-place Unstable O(n^2)
 	 * @param a 表
 	 */
 	public static void simpleSelectionSort(Comparable[] a){
@@ -82,6 +85,7 @@ public class SortUtil {
 	
 	/**
 	 * 二元选择排序
+	 * @category In-place Unstable O(n^2)
 	 * @param a 表
 	 */
 	public static void simpleSelectionSort2(Comparable[] a){
@@ -117,6 +121,7 @@ public class SortUtil {
 	
 	/**
 	 * 堆排序
+	 * @category In-place Unstable O(n*logn)
 	 * @param a 表
 	 */
 	public static void heapSort(Comparable[] a){
@@ -164,7 +169,8 @@ public class SortUtil {
 	
 	
 	/**
-	 * 冒泡排序 O(n!)
+	 * 冒泡排序
+	 * @category In-place Stable O(n^2)
 	 * @param a 表
 	 */
 	public static void bubbleSort(Comparable[] a){
@@ -181,8 +187,9 @@ public class SortUtil {
 	
 	
 	/**
-	 * 优化冒泡 1
+	 * 优化冒泡
 	 * 若序列已经有序, 则可以立即终止
+	 * @category In-place Stable worst:O(n^2) best:O(n) when the table is in-orders
 	 * @param a 表
 	 */
 	public static void bubbleSort2(Comparable[] a){
@@ -201,9 +208,10 @@ public class SortUtil {
 	}
 	
 	/**
-	 * 优化冒泡2
+	 * 优化冒泡
 	 * 记录最后交换位置position,position后为已经有序序列,
 	 * 只需检查比较position前的序列
+	 * @category In-place Stable worst:O(n^2) best:O(n) when the table is in-orders
 	 * @param a 表
 	 */
 	public static void bubbleSort3(Comparable[] a){
@@ -223,8 +231,9 @@ public class SortUtil {
 	}
 	
 	/**
-	 * 优化冒泡3
+	 * 优化冒泡
 	 * 双向冒泡, 一次同时找出最大和最小值
+	 * @category In-place Stable O(n^2)
 	 * @param a 表
 	 */
 	public static void bubbleSort4(Comparable[] a){
@@ -232,7 +241,6 @@ public class SortUtil {
 		int high = a.length - 1;
 		int j;
 		Comparable tmp = null;
-		
 		while(low < high){
 			for(j = low; j < high; j++){
 				if(a[j].compareTo(a[j+1]) > 0){
@@ -254,8 +262,9 @@ public class SortUtil {
 	}
 	
 	/**
-	 * 快速排序 O(nlogn)
+	 * 快速排序
 	 * 递归实现, 易栈溢出
+	 * @category In-place Unstable O(n*logn)
 	 * @param a 表
 	 */
 	public static void quickSort(Comparable[] a){
@@ -267,6 +276,7 @@ public class SortUtil {
 	/**
 	 * 快速排序 优化 
 	 * 使用快速排序使表局部有序, 再调用插入排序进行排序
+	 * @category In-place Unstable O(n*logn)
 	 * @param a 表
 	 * @param k 步长
 	 */
@@ -278,8 +288,9 @@ public class SortUtil {
 	}
 	
 	/**
-	 * 快速排序 O(nlogn)
+	 * 快速排序
 	 * 递归实现, 易栈溢出
+	 * @category In-place Unstable O(n*logn)
 	 * @param a 表
 	 */
 	public static void quickSort2(Comparable[] a){
@@ -349,8 +360,8 @@ public class SortUtil {
 	
 	/**
 	 * 归并排序 迭代实现
+	 * @category Out-place Stable O(n*logn)
 	 * @param a 表
-	 * @return a 有序表
 	 */
 	public static void mergeSort(Comparable[] a){
 		Comparable[] b = new Comparable[a.length];//临时表,用以存放合并数据
@@ -371,8 +382,8 @@ public class SortUtil {
 	
 	/**
 	 * 两路归并排序 递归实现
+	 * @category Out-place Stable O(n*logn)
 	 * @param a
-	 * @return
 	 */
 	public static void mergeSortRecursive(Comparable[] a){
 		Comparable[] b = new Comparable[a.length];
@@ -430,7 +441,10 @@ public class SortUtil {
 	
 	/**
 	 * 基数排序   箱排序优化
+	 * @category Out-place Stable O((n+k)d) when k = O(n) & d = constant than complexity = O(n)
 	 * @param a 表
+	 * @param k 最大位数
+	 * @param r 基数
 	 */
 	public static void radixSort(Integer[] a, int k, int r){
 		int n = a.length;
